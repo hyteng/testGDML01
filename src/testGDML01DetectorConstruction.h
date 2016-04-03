@@ -17,6 +17,7 @@
 
 #include "G4GDMLParser.hh"
 #include "testGDML01SDFactory.h"
+#include "testGDML01SMFactory.h"
 //#include "testGDML01MagneticField.h"
 
 class G4VPhysicalVolume;
@@ -27,14 +28,15 @@ class G4Material;
 
 class testGDML01DetectorConstruction : public G4VUserDetectorConstruction {
     public:
-        testGDML01DetectorConstruction(const G4String& name, testGDML01SDFactory* fact);
-        ~testGDML01DetectorConstruction();
+        testGDML01DetectorConstruction(const G4String& name, testGDML01SDFactory* sd, testGDML01SMFactory* sm=NULL);
+        virtual ~testGDML01DetectorConstruction();
 
     public:
         virtual G4VPhysicalVolume* Construct();
         virtual void ConstructSDandField();
 
-        void setFactory(testGDML01SDFactory* fact);
+        void setSDFactory(testGDML01SDFactory* sd);
+        void setSMFactory(testGDML01SMFactory* sm);
         void setReadFile(const G4String& fname);
         void setWriteFile(const G4String& fname);
 
@@ -61,7 +63,9 @@ class testGDML01DetectorConstruction : public G4VUserDetectorConstruction {
         G4GDMLWriteStructure* fWriter;
         G4GDMLParser* fParser;
 
-        testGDML01SDFactory* factory;
+        testGDML01SDFactory* sdFactory;
+        testGDML01SMFactory* smFactory;
+        std::vector<G4Region*> simRegionList;
         //testGDML01DetectorMessenger* fDetectorMessenger;
 };
 #endif

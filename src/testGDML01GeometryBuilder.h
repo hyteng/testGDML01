@@ -19,7 +19,8 @@ class testGDML01GeometryBuilder {
         testGDML01DetectorConstruction *theWorld;
         std::vector<testGDML01ParallelWorld*> theParaWorldCollection;
         std::vector<G4String> nameCollection;
-        testGDML01SDFactory* factory;
+        testGDML01SDFactory* sdFactory;
+        testGDML01SMFactory* smFactory;
 
         std::ifstream gdmlList;
 };

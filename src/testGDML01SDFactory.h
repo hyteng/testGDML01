@@ -16,7 +16,7 @@ public:
     testGDML01SDFactory();
     ~testGDML01SDFactory();
 
-    G4VSensitiveDetector* getSD(G4String name);
+    G4VSensitiveDetector* createSD(G4String name);
 
 private:
     /* data */  

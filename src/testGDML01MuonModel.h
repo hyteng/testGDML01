@@ -21,7 +21,7 @@ class testGDML01MuonModel : public G4VFastSimulationModel {
     public:
         testGDML01MuonModel(G4String, G4Region*);
         testGDML01MuonModel(G4String);
-        ~testGDML01MuonModel();
+        virtual ~testGDML01MuonModel();
 
         // -- IsApplicable
         G4bool IsApplicable(const G4ParticleDefinition&);

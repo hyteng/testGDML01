@@ -10,7 +10,7 @@ class G4TouchableHistory;
 class testGDML01TrackerSD : public G4VSensitiveDetector {
   public:
       testGDML01TrackerSD(G4String name, G4double eff=100.0, G4bool noise=false, G4double th=0.9);
-      ~testGDML01TrackerSD();
+      virtual ~testGDML01TrackerSD();
 
       void Initialize(G4HCofThisEvent* HCE);
       G4bool ProcessHits(G4Step* aStep, G4TouchableHistory* roHist=NULL);

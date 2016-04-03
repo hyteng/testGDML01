@@ -20,13 +20,15 @@ void testGDML01GeometryBuilder::init(const std::string &nameList) {
         nameCollection.push_back(idx);
     }
 
-    factory = new testGDML01SDFactory;
-    theWorld = new testGDML01DetectorConstruction(nameCollection[0], factory);
+    sdFactory = new testGDML01SDFactory;
+    smFactory = new testGDML01SMFactory;
+
+    theWorld = new testGDML01DetectorConstruction(nameCollection[0], sdFactory);
 
     G4String paraName;
     for(int i=1; i<nameCollection.size(); i++) {
         paraName = nameCollection[i];
-        testGDML01ParallelWorld* fParaWorld = new testGDML01ParallelWorld(paraName, factory);
+        testGDML01ParallelWorld* fParaWorld = new testGDML01ParallelWorld(paraName, sdFactory);
         theParaWorldCollection.push_back(fParaWorld);
         theWorld->RegisterParallelWorld(fParaWorld);
     }
