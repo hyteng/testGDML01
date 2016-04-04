@@ -23,6 +23,7 @@ testGDML01ParallelWorld::testGDML01ParallelWorld(const G4String& name, testGDML0
     sdFactory = sd;
     smFactory = sm;
     simRegionList.clear();
+    ownFilterList.clear();
     fReader = new testGDML01ExtReader;
     fWriter = new testGDML01ExtWriter;
     fParser = new G4GDMLParser(fReader, fWriter);
@@ -39,6 +40,7 @@ void testGDML01ParallelWorld::Construct() {
         fParser->Write(fWriteFile, fWorldPhysVol, true, "./extSchema/testExtension.xsd");
 
     simRegionList.clear();
+    ownFilterList.clear();
     const G4GDMLAuxMapType* auxmap = fParser->GetAuxMap();
     G4cout << "Found " << auxmap->size() << " volume(s) with auxiliary information." << G4endl << G4endl;
     for(G4GDMLAuxMapType::const_iterator iter=auxmap->begin(); iter!=auxmap->end(); iter++) {
@@ -74,6 +76,9 @@ void testGDML01ParallelWorld::Construct() {
                 std::stringstream tmp((*vit).value);
                 tmp >> positronCut;
             }
+            if((*vit).type == "particleFilter") {
+                ownFilterList.push_back((*vit).value);
+            }
         }
 
         if(isRegion) {
@@ -83,6 +88,7 @@ void testGDML01ParallelWorld::Construct() {
             if(positronCut!=-1.0) simRegionList.back()->GetProductionCuts()->SetProductionCut(positronCut, G4ProductionCuts::GetIndex("e+"));
         }
     }
+    paraFilterList->push_back(ownFilterList);
     G4cout << G4endl;
 }
 

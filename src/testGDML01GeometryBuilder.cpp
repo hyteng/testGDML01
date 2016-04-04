@@ -23,13 +23,16 @@ void testGDML01GeometryBuilder::init(const std::string &nameList) {
     sdFactory = new testGDML01SDFactory;
     smFactory = new testGDML01SMFactory;
 
-    theWorld = new testGDML01DetectorConstruction(nameCollection[0], sdFactory);
+    theWorld = new testGDML01DetectorConstruction(nameCollection[0], sdFactory, smFactory);
 
     G4String paraName;
     for(int i=1; i<nameCollection.size(); i++) {
         paraName = nameCollection[i];
-        testGDML01ParallelWorld* fParaWorld = new testGDML01ParallelWorld(paraName, sdFactory);
+        testGDML01ParallelWorld* fParaWorld = new testGDML01ParallelWorld(paraName, sdFactory, smFactory);
         theParaWorldCollection.push_back(fParaWorld);
         theWorld->RegisterParallelWorld(fParaWorld);
     }
+    // set process, as well as for parrallel SD and fast Simulation
+    thePhysics->setWorld(nameCollection);
+    thePhysics->setParaFilter(theWorld->getParaFilter());
 }

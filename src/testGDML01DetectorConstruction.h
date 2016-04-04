@@ -39,6 +39,7 @@ class testGDML01DetectorConstruction : public G4VUserDetectorConstruction {
         void setSMFactory(testGDML01SMFactory* sm);
         void setReadFile(const G4String& fname);
         void setWriteFile(const G4String& fname);
+        std::vector< std::vector<G4String> >& getParaFilter();
 
     private:
         void setMagField(G4double);
@@ -67,5 +68,8 @@ class testGDML01DetectorConstruction : public G4VUserDetectorConstruction {
         testGDML01SMFactory* smFactory;
         std::vector<G4Region*> simRegionList;
         //testGDML01DetectorMessenger* fDetectorMessenger;
+
+        std::vector<G4String> ownFilterList;
+        std::vector< std::vector<G4String> > paraFilterList;
 };
 #endif

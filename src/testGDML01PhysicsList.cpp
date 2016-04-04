@@ -48,22 +48,17 @@ void testGDML01PhysicsList::ConstructParticle() {
     // This ensures that objects of these particle types will be
     // created in the program. 
 
-    ConstructBosons();
-    ConstructLeptons();
+    //ConstructBosons();
+    //ConstructLeptons();
     //ConstructMesons();
     //ConstructBaryons();
-}
 
-void testGDML01PhysicsList::ConstructBosons() {
-
+    // ConstructBosons
     G4Geantino::GeantinoDefinition();
     G4ChargedGeantino::ChargedGeantinoDefinition();
-
     G4Gamma::GammaDefinition(); 
-}
 
-void testGDML01PhysicsList::ConstructLeptons() {
-
+    // ConstructLeptons
     // e
     G4Electron::ElectronDefinition();
     G4Positron::PositronDefinition();
@@ -80,11 +75,10 @@ void testGDML01PhysicsList::ConstructLeptons() {
 
 void testGDML01PhysicsList::ConstructProcess() {
     // Define transportation process
-
     AddTransportation();
-    //AddStepMax();
-    //AddParameterisation();
-    //ConstructEM();
+    AddStepMax();
+    AddParameterisation();
+    ConstructEM();
 }
 
 void testGDML01PhysicsList::ConstructEM() {
@@ -148,17 +142,47 @@ void testGDML01PhysicsList::ConstructEM() {
 
 void testGDML01PhysicsList::AddParameterisation() {
 
-    G4FastSimulationManagerProcess* fastSimProcess_Mu = new G4FastSimulationManagerProcess("Mu");
+    G4FastSimulationManagerProcess* smProcess = new G4FastSimulationManagerProcess("smProcess");
+    paraSMProcess.clear();
+    paraSDProcess.clear();
+    for(int i=1; i<worldName.size(); i++) {
+        // -- Fast simulation manager process for "parallel geometry":
+        G4FastSimulationManagerProcess* smProcessPara = new G4FastSimulationManagerProcess("smProcessPara_"+worldName[i], worldName[i]);
+        paraSMProcess.push_back(smProcessPara);
+        // extra procedure for physical process 
+        G4ParallelWorldScoringProcess* sdProcessPara  = new G4ParallelWorldScoringProcess("sdProcessPara_"+worldName[i]);
+        sdProcessPara->SetParallelWorld(worldName[i]);
+        paraSDProcess.push_back(sdProcessPara); 
+    }
 
-    G4cout << "AddParameterisation for muon" << G4endl;
+    G4cout << "Add Parameterisation for all worlds" << G4endl;
     theParticleIterator->reset();
     while((*theParticleIterator)()) {
         G4ParticleDefinition* particle = theParticleIterator->value();
         G4ProcessManager* pmanager = particle->GetProcessManager();
-        if (particle->GetParticleName() == "mu+" || particle->GetParticleName() == "mu-")
-            pmanager->AddProcess(fastSimProcess_Mu);
-            //pmanager->SetProcessOrdering(fastSimProcess_Mu, idxAlongStep, 1);
-            pmanager->SetProcessOrdering(fastSimProcess_Mu, idxPostStep);
+        // first the fast simulation
+        if(paraFilter(particle->GetParticleName(), 0)) {
+            pmanager->AddProcess(smProcess);
+            pmanager->SetProcessOrdering(smProcess, idxAlongStep, 1);
+            pmanager->SetProcessOrdering(smProcess, idxPostStep);
+        }
+        // then the fast simulation for parallel world
+        for(int i=0; i<worldName.size()-1; i++) {
+            if(paraFilter(particle->GetParticleName(), i+1)) {
+                pmanager->AddProcess(paraSMProcess[i]);
+                pmanager->SetProcessOrdering(paraSMProcess[i], idxAlongStep, 1);
+                pmanager->SetProcessOrdering(paraSMProcess[i], idxPostStep);
+            }
+        }
+        // last the parallel SD, put to just after G4Transporation and prior to any other physics processes, including fast simulation. 
+        if(!particle->IsShortLived()) {
+            for(int i=0; i<worldName.size()-1; i++) {
+                pmanager->AddProcess(paraSDProcess[i]);
+                pmanager->SetProcessOrderingToLast(paraSDProcess[i], idxAtRest);
+                pmanager->SetProcessOrdering(paraSDProcess[i], idxAlongStep, 1);
+                pmanager->SetProcessOrdering(paraSDProcess[i], idxPostStep);
+            }
+        }
     }
 }
 
@@ -166,16 +190,18 @@ void testGDML01PhysicsList::SetCuts() {
     // uppress error messages even in case e/gamma/proton do not exist            
     G4int temp = GetVerboseLevel();
     SetVerboseLevel(0);                                                           
-    //  " G4VUserPhysicsList::SetCutsWithDefault" method sets 
-    //   the default cut value for all particle types 
+    // "G4VUserPhysicsList::SetCutsWithDefault" method sets the default cut value for all particle types 
     SetCutsWithDefault();   
 
     // Retrieve verbose level
     SetVerboseLevel(temp);  
 }
 
-void testGDML01PhysicsList::AddStepMax()
-{
+void testGDML01PhysicsList::AddTransportation() {
+    G4VUserPhysicsList::AddTransportation();
+}
+
+void testGDML01PhysicsList::AddStepMax() {
   // Step limitation seen as a process
   G4StepLimiter* stepLimiter = new G4StepLimiter();
   ////G4UserSpecialCuts* userCuts = new G4UserSpecialCuts();
@@ -192,4 +218,26 @@ void testGDML01PhysicsList::AddStepMax()
   }
 }
 
+void testGDML01PhysicsList::setWorld(std::vector<G4String>& nameCollection) {
+    worldName = nameCollection;
+}
+
+G4bool testGDML01PhysicsList::paraFilter(const G4String& particle, int idx) {
+    if(idx >= (*paraFilterList).size())
+        return false;
+    
+    //if((*paraFilterList)[idx][0] == "all")
+    if(find((*paraFilterList)[idx].begin(), (*paraFilterList)[idx].end(), "all") != (*paraFilterList)[idx].end())
+        return true;
+
+    G4bool pass = false;
+    if(find((*paraFilterList)[idx].begin(), (*paraFilterList)[idx].end(), particle) != (*paraFilterList)[idx].end())
+        pass = true;
+        
+    return pass;
+}
+
+void testGDML01PhysicsList::setParaFilter(std::vector< std::vector<G4String> >& para) {
+    paraFilterList = &para;
+}
 

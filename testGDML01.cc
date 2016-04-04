@@ -25,7 +25,6 @@ Version: 0.0.1
 
 #include "testGDML01GeometryBuilder.h"
 #include "testGDML01PhysicsList.h"
-//#include "QGSP_BERT.hh"
 #include "testGDML01ActionInitialization.h"
 //#include "testGDML01SteppingVerbose.h"
 //#include "G4GlobalFastSimulationManager.hh"
@@ -49,12 +48,12 @@ int main(int argc, char** argv) {
     //G4VSteppingVerbose::SetInstance(verbosity);
 
     // UserInitialization class - mandatory
-    testGDML01GeometryBuilder* theWorlds = new testGDML01GeometryBuilder;
-    theWorlds->init("gdmlList.txt");
-    runManager->SetUserInitialization(theWorlds->getWorld());
+    testGDML01GeometryBuilder* theWorld = new testGDML01GeometryBuilder;
+    theWorld->init("gdmlList.txt");
+    runManager->SetUserInitialization(theWorld->getWorld());
     //G4VUserPhysicsList* thePhysicsList = new QGSP_BERT();
-    G4VUserPhysicsList* thePhysicsList = new testGDML01PhysicsList;
-    runManager->SetUserInitialization(thePhysicsList);
+    //G4VUserPhysicsList* thePhysicsList = new testGDML01PhysicsList;
+    runManager->SetUserInitialization(theWorld->getPhysics());
 
     runManager->SetUserInitialization(new testGDML01ActionInitialization());
 

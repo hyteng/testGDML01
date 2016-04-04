@@ -30,5 +30,7 @@ class testGDML01ParallelWorld :public G4VUserParallelWorld {
         testGDML01SDFactory* sdFactory;
         testGDML01SMFactory* smFactory;
         std::vector<G4Region*> simRegionList;
+        std::vector<G4String> ownFilterList;
+        std::vector< std::vector<G4String> >* paraFilterList;
 };
 #endif

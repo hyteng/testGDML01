@@ -53,6 +53,8 @@ testGDML01DetectorConstruction::testGDML01DetectorConstruction(const G4String& n
     sdFactory = sd;
     smFactory = sm;
     simRegionList.clear();
+    ownFilterList.clear();
+    paraFilterList.clear();
     fReader = new testGDML01ExtReader;
     fWriter = new testGDML01ExtWriter;
     fParser = new G4GDMLParser(fReader, fWriter);
@@ -77,6 +79,7 @@ G4VPhysicalVolume* testGDML01DetectorConstruction::Construct() {
         fParser->Write(fWriteFile, fWorldPhysVol, true, "./extSchema/testExtension.xsd");
 
     simRegionList.clear();
+    ownFilterList.clear();
     const G4GDMLAuxMapType* auxmap = fParser->GetAuxMap();
     G4cout << "Found " << auxmap->size() << " volume(s) with auxiliary information." << G4endl << G4endl;
     for(G4GDMLAuxMapType::const_iterator iter=auxmap->begin(); iter!=auxmap->end(); iter++) {
@@ -112,6 +115,9 @@ G4VPhysicalVolume* testGDML01DetectorConstruction::Construct() {
                 std::stringstream tmp((*vit).value);
                 tmp >> positronCut;
             }
+            if((*vit).type == "particleFilter") {
+                ownFilterList.push_back((*vit).value);
+            }
         }
 
         if(isRegion) {
@@ -121,6 +127,7 @@ G4VPhysicalVolume* testGDML01DetectorConstruction::Construct() {
             if(positronCut!=-1.0) simRegionList.back()->GetProductionCuts()->SetProductionCut(positronCut, G4ProductionCuts::GetIndex("e+"));
         }
     }
+    paraFilterList.push_back(ownFilterList);
     G4cout << G4endl;
 
     return fWorldPhysVol;
@@ -184,5 +191,9 @@ void testGDML01DetectorConstruction::setSDFactory(testGDML01SDFactory* sd) {
 
 void testGDML01DetectorConstruction::setSMFactory(testGDML01SMFactory* sm) {
     smFactory = sm;
+}
+
+std::vector< std::vector<G4String> >& testGDML01DetectorConstruction::getParaFilter() {
+    return paraFilterList;
 }
 
