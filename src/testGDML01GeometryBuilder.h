@@ -16,7 +16,8 @@ class testGDML01GeometryBuilder {
         
         void init(const std::string &nameList);
         G4VUserDetectorConstruction* getWorld() {return theWorld;};
-        G4VUserPhysicsList* getPhysics() {return thePhysics;};
+        std::vector<testGDML01ParallelWorld*>& getParaWorld() {return theParaWorldCollection;};
+        G4VUserPhysicsList* getPhysics() {return thePhysicsList;};
 
     private:
         std::vector<testGDML01ParallelWorld*> theParaWorldCollection;
@@ -27,6 +28,6 @@ class testGDML01GeometryBuilder {
         std::ifstream gdmlList;
 
         testGDML01DetectorConstruction* theWorld;
-        testGDML01PhysicsList* thePhysics;
+        testGDML01PhysicsList* thePhysicsList;
 };
 #endif

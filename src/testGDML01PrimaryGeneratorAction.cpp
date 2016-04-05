@@ -18,7 +18,7 @@ testGDML01PrimaryGeneratorAction::testGDML01PrimaryGeneratorAction() {
     G4String particleName;
     particleGun->SetParticleDefinition(particleTable->FindParticle(particleName="mu-"));
     //particleGun->SetParticleEnergy(100.0*GeV);
-    particleGun->SetParticlePosition(G4ThreeVector(-1.0*m, 0.0, 0.0));
+    particleGun->SetParticlePosition(G4ThreeVector(0.0, 0.0, -1.0*m));
 }
 
 testGDML01PrimaryGeneratorAction::~testGDML01PrimaryGeneratorAction() {
@@ -28,7 +28,7 @@ testGDML01PrimaryGeneratorAction::~testGDML01PrimaryGeneratorAction() {
 void testGDML01PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent) {
 
     G4int i = anEvent->GetEventID()%10;
-    G4ThreeVector v0(1.0,0.0,0.0);
+    G4ThreeVector v0(0.0,0.0,1.0);
     double angle = CLHEP::RandFlat::shoot(-0.25, 0.25);
     //angle = 0.25;
     G4ThreeVector v = v0.rotateY(angle);

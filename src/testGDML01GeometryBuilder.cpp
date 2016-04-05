@@ -29,10 +29,12 @@ void testGDML01GeometryBuilder::init(const std::string &nameList) {
     for(int i=1; i<nameCollection.size(); i++) {
         paraName = nameCollection[i];
         testGDML01ParallelWorld* fParaWorld = new testGDML01ParallelWorld(paraName, sdFactory, smFactory);
+        fParaWorld->setParaFilter(theWorld->getParaFilter());
         theParaWorldCollection.push_back(fParaWorld);
         theWorld->RegisterParallelWorld(fParaWorld);
     }
     // set process, as well as for parrallel SD and fast Simulation
-    thePhysics->setWorld(nameCollection);
-    thePhysics->setParaFilter(theWorld->getParaFilter());
+    thePhysicsList = new testGDML01PhysicsList;
+    thePhysicsList->setWorld(nameCollection);
+    thePhysicsList->setParaFilter(theWorld->getParaFilter());
 }

@@ -1,6 +1,7 @@
 #include <sstream>
 #include "G4VSensitiveDetector.hh"
 #include "G4VFastSimulationModel.hh"
+#include "G4PVPlacement.hh"
 
 // GDML parser include
 #include "G4PhysicalConstants.hh"
@@ -33,16 +34,20 @@ testGDML01ParallelWorld::~testGDML01ParallelWorld() {
 }
 
 void testGDML01ParallelWorld::Construct() {
-    G4VPhysicalVolume* fWorldPhysVol;
+    G4VPhysicalVolume* trackingWorld = GetWorld();
+    G4LogicalVolume* ghostWorldLV = trackingWorld->GetLogicalVolume();
+
     fParser->Read(fReadFile, false);
-    fWorldPhysVol = fParser->GetWorldVolume(); 
+    G4VPhysicalVolume* fWorldPhysVol = fParser->GetWorldVolume(); 
+    G4LogicalVolume* fWorldLV = fWorldPhysVol->GetLogicalVolume();
+    G4VPhysicalVolume* ghostWorldPV = (G4VPhysicalVolume*) new G4PVPlacement(0, G4ThreeVector(), fWorldLV, "ghostPhysical", ghostWorldLV, 0, 0);
     if(fWritingChoice!=0)
         fParser->Write(fWriteFile, fWorldPhysVol, true, "./extSchema/testExtension.xsd");
 
     simRegionList.clear();
     ownFilterList.clear();
     const G4GDMLAuxMapType* auxmap = fParser->GetAuxMap();
-    G4cout << "Found " << auxmap->size() << " volume(s) with auxiliary information." << G4endl << G4endl;
+    G4cout << "paraWorld " << GetName() << " found " << auxmap->size() << " volume(s) with auxiliary information." << G4endl << G4endl;
     for(G4GDMLAuxMapType::const_iterator iter=auxmap->begin(); iter!=auxmap->end(); iter++) {
         G4LogicalVolume* myvol = (*iter).first;
         G4double generalCut = -1.0;
@@ -98,41 +103,25 @@ void testGDML01ParallelWorld::ConstructSD() {
     const G4GDMLAuxMapType* auxmap = fParser->GetAuxMap();
     G4bool isSD = false;
     for(G4GDMLAuxMapType::const_iterator iter=auxmap->begin();iter!=auxmap->end(); iter++) {
+        G4LogicalVolume* myvol = (*iter).first;
+        G4cout << "Volume " << myvol->GetName() << " has the following list of auxiliary information: " << G4endl << G4endl;
         for(G4GDMLAuxListType::const_iterator vit=(*iter).second.begin();vit!=(*iter).second.end(); vit++) {
             if((*vit).type=="SensDet") {
                 G4String sdName = (*vit).value;
                 G4VSensitiveDetector* mydet = SDman->FindSensitiveDetector(sdName);
                 if(mydet == NULL) {
                     mydet = sdFactory->createSD(sdName);
+                    SDman->AddNewDetector(mydet);
                 }
 
                 if(mydet != NULL) {
                     isSD = true;
-                    G4LogicalVolume* myvol = (*iter).first;
-                    SDman->AddNewDetector(mydet);
                     myvol->SetSensitiveDetector(mydet);
                 }
             }
         }
     }
-    /*
-    // extra procedure for physical process, should be move to physicsBuilder
-    if(isSD == true) {
-        G4ParallelWorldScoringProcess* theParallelWorldScoringProcess  = new G4ParallelWorldScoringProcess(GetName());
-        theParallelWorldScoringProcess->SetParallelWorld("ParallelScoringWorld");
-        theParticleIterator->reset();
-        while((*theParticleIterator)()) {
-            G4ParticleDefinition* particle = theParticleIterator->value();
-            if(!particle->IsShortLived()) {
-                G4ProcessManager* pmanager = particle->GetProcessManager();
-                pmanager->AddProcess(theParallelWorldScoringProcess);
-                pmanager->SetProcessOrderingToLast(theParallelWorldScoringProcess, idxAtRest);
-                pmanager->SetProcessOrdering(theParallelWorldScoringProcess, idxAlongStep, 1);
-                pmanager->SetProcessOrderingToLast(theParallelWorldScoringProcess, idxPostStep);
-            }
-        }
-    }
-    */
+
     if(smFactory != NULL) {
         for(G4int simRegionIter=0; simRegionIter<G4int(simRegionList.size());simRegionIter++) {
             G4Region* theEvelope = simRegionList[simRegionIter];

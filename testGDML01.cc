@@ -48,12 +48,14 @@ int main(int argc, char** argv) {
     //G4VSteppingVerbose::SetInstance(verbosity);
 
     // UserInitialization class - mandatory
-    testGDML01GeometryBuilder* theWorld = new testGDML01GeometryBuilder;
-    theWorld->init("gdmlList.txt");
-    runManager->SetUserInitialization(theWorld->getWorld());
+    testGDML01GeometryBuilder* theBuilder = new testGDML01GeometryBuilder;
+    theBuilder->init("gdmlList.txt");
+    theBuilder->getWorld();
+    runManager->SetUserInitialization(theBuilder->getWorld());
     //G4VUserPhysicsList* thePhysicsList = new QGSP_BERT();
     //G4VUserPhysicsList* thePhysicsList = new testGDML01PhysicsList;
-    runManager->SetUserInitialization(theWorld->getPhysics());
+    //runManager->SetUserInitialization(thePhysicsList);
+    runManager->SetUserInitialization(theBuilder->getPhysics());
 
     runManager->SetUserInitialization(new testGDML01ActionInitialization());
 

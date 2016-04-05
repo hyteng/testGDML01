@@ -9,14 +9,14 @@
 
     <define>      
         <!-- world -->
-        <constant name="world_side" value="10000" />
+        <constant name="world_side" value="1000" />
         <constant name="world_x" value="world_side" />
         <constant name="world_y" value="world_side" />
         <constant name="world_z" value="world_side" />
 
         <!-- test volume -->
-        <constant name="test_box_size" value="100.0"/>
-        <position name="test_position"/>
+        <constant name="test_box_size" value="30.0"/>
+        <position name="test_position" x="0" y="0" z="0"/>
     </define>
 
     <materials>

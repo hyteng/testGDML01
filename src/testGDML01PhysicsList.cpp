@@ -76,9 +76,9 @@ void testGDML01PhysicsList::ConstructParticle() {
 void testGDML01PhysicsList::ConstructProcess() {
     // Define transportation process
     AddTransportation();
-    AddStepMax();
+    //AddStepMax();
     AddParameterisation();
-    ConstructEM();
+    //ConstructEM();
 }
 
 void testGDML01PhysicsList::ConstructEM() {
@@ -180,7 +180,7 @@ void testGDML01PhysicsList::AddParameterisation() {
                 pmanager->AddProcess(paraSDProcess[i]);
                 pmanager->SetProcessOrderingToLast(paraSDProcess[i], idxAtRest);
                 pmanager->SetProcessOrdering(paraSDProcess[i], idxAlongStep, 1);
-                pmanager->SetProcessOrdering(paraSDProcess[i], idxPostStep);
+                pmanager->SetProcessOrderingToLast(paraSDProcess[i], idxPostStep);
             }
         }
     }
@@ -225,15 +225,12 @@ void testGDML01PhysicsList::setWorld(std::vector<G4String>& nameCollection) {
 G4bool testGDML01PhysicsList::paraFilter(const G4String& particle, int idx) {
     if(idx >= (*paraFilterList).size())
         return false;
-    
     //if((*paraFilterList)[idx][0] == "all")
     if(find((*paraFilterList)[idx].begin(), (*paraFilterList)[idx].end(), "all") != (*paraFilterList)[idx].end())
         return true;
-
     G4bool pass = false;
     if(find((*paraFilterList)[idx].begin(), (*paraFilterList)[idx].end(), particle) != (*paraFilterList)[idx].end())
         pass = true;
-        
     return pass;
 }
 

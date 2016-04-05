@@ -19,6 +19,7 @@ class testGDML01ParallelWorld :public G4VUserParallelWorld {
         void setSMFactory(testGDML01SMFactory* sm);
         void setReadFile(const G4String& fname);
         void setWriteFile(const G4String& fname);
+        void setParaFilter(std::vector< std::vector<G4String> >& para) {paraFilterList = &para;};
 
     private:
         G4String fReadFile, fWriteFile;

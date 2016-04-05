@@ -9,14 +9,14 @@
 
     <define>      
         <!-- world -->
-        <constant name="world_side" value="10000" />
+        <constant name="world_side" value="1000" />
         <constant name="world_x" value="world_side" />
         <constant name="world_y" value="world_side" />
         <constant name="world_z" value="world_side" />
 
         <!-- test volume -->
-        <constant name="test_box_size" value="100.0"/>
-        <position name="test_position"/>
+        <constant name="test_box_size_p1" value="50.0"/>
+        <position name="test_position" x="0" y="0" z="0"/>
     </define>
 
     <materials>
@@ -53,34 +53,34 @@
 
         <!-- test volume -->
         <box lunit="mm"
-            name="test_box"
-            x="test_box_size"
-            y="test_box_size"
-            z="test_box_size"/>
+            name="test_box_p1"
+            x="test_box_size_p1"
+            y="test_box_size_p1"
+            z="test_box_size_p1"/>
     </solids>
 
     <structure>
-        <volume name="test_volume">
+        <volume name="test_volume_p1">
             <materialref ref="Air"/>
-            <solidref ref="test_box"/>
+            <solidref ref="test_box_p1"/>
             <auxiliary auxtype="SensDet" auxvalue="tracker"/>
-            <auxiliary auxtype="Color" auxvalue="Blue"/>
+            <auxiliary auxtype="Color" auxvalue="Green"/>
             <!-- color extension element -->	
             <colorref ref="test_color"/> 
         </volume>
 
-        <volume name="world">
+        <volume name="world_p1">
             <materialref ref="Air"/>
             <solidref ref="world_box"/>
             <physvol>
-                <volumeref ref="test_volume"/>
+                <volumeref ref="test_volume_p1"/>
                 <positionref ref="test_position"/>
             </physvol>
         </volume>
     </structure>
 
     <setup name="Default" version="1.0">
-        <world ref="world"/>
+        <world ref="world_p1"/>
     </setup>
 
 </gdml_simple_extension>

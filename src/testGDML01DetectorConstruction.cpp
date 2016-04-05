@@ -148,11 +148,11 @@ void testGDML01DetectorConstruction::ConstructSDandField() {
                 G4VSensitiveDetector* mydet = SDman->FindSensitiveDetector(sdName);
                 if(mydet == NULL) {
                     mydet = sdFactory->createSD(sdName);
+                    SDman->AddNewDetector(mydet);
                 }
 
                 if(mydet != NULL) {
                     G4cout << "get SD from gdml and create by sdFactory" << G4endl;
-                    SDman->AddNewDetector(mydet);
                     myvol->SetSensitiveDetector(mydet);
                 }
             }
