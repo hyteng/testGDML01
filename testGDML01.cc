@@ -100,8 +100,8 @@ int main(int argc, char** argv) {
     delete ui;
 
 
-    //G4int EventNumber = 10;
-    //runManager->BeamOn(EventNumber);
+    G4int EventNumber = 10;
+    runManager->BeamOn(EventNumber);
 
     #ifdef G4VIS_USE
     delete theVisManager;   

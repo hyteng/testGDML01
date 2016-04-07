@@ -76,7 +76,7 @@ void testGDML01PhysicsList::ConstructParticle() {
 void testGDML01PhysicsList::ConstructProcess() {
     // Define transportation process
     AddTransportation();
-    //AddStepMax();
+    AddStepMax();
     AddParameterisation();
     //ConstructEM();
 }
@@ -162,16 +162,13 @@ void testGDML01PhysicsList::AddParameterisation() {
         G4ProcessManager* pmanager = particle->GetProcessManager();
         // first the fast simulation
         if(paraFilter(particle->GetParticleName(), 0)) {
-            pmanager->AddProcess(smProcess);
-            pmanager->SetProcessOrdering(smProcess, idxAlongStep, 1);
-            pmanager->SetProcessOrdering(smProcess, idxPostStep);
+            G4cout << "add smProcess for tracking world." << G4endl;
+            pmanager->AddProcess(smProcess, -1, 0, 0);
         }
         // then the fast simulation for parallel world
         for(int i=0; i<worldName.size()-1; i++) {
             if(paraFilter(particle->GetParticleName(), i+1)) {
-                pmanager->AddProcess(paraSMProcess[i]);
-                pmanager->SetProcessOrdering(paraSMProcess[i], idxAlongStep, 1);
-                pmanager->SetProcessOrdering(paraSMProcess[i], idxPostStep);
+                pmanager->AddProcess(paraSMProcess[i], -1, 0, 0);
             }
         }
         // last the parallel SD, put to just after G4Transporation and prior to any other physics processes, including fast simulation. 
@@ -231,6 +228,8 @@ G4bool testGDML01PhysicsList::paraFilter(const G4String& particle, int idx) {
     G4bool pass = false;
     if(find((*paraFilterList)[idx].begin(), (*paraFilterList)[idx].end(), particle) != (*paraFilterList)[idx].end())
         pass = true;
+
+    pass = true;
     return pass;
 }
 

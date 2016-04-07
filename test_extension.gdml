@@ -15,8 +15,8 @@
         <constant name="world_z" value="world_side" />
 
         <!-- test volume -->
-        <constant name="test_box_size" value="30.0"/>
-        <position name="test_position" x="0" y="0" z="0"/>
+        <constant name="test_box_size" value="100.0"/>
+        <position name="test_position" x="0" y="0" z="100"/>
     </define>
 
     <materials>
@@ -65,6 +65,7 @@
             <solidref ref="test_box"/>
             <auxiliary auxtype="SensDet" auxvalue="tracker"/>
             <auxiliary auxtype="Color" auxvalue="Blue"/>
+            <auxiliary auxtype="FastSimModel" auxvalue="MuonModel"/>
             <!-- color extension element -->	
             <colorref ref="test_color"/> 
         </volume>
