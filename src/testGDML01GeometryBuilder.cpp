@@ -6,10 +6,16 @@
 testGDML01GeometryBuilder::testGDML01GeometryBuilder() {
     theParaWorldCollection.clear();
     nameCollection.clear();
+
+    sdFactory = new testGDML01SDFactory;
+    smFactory = new testGDML01SMFactory;
 }
 
 testGDML01GeometryBuilder::~testGDML01GeometryBuilder() {
     theParaWorldCollection.clear();
+
+    delete sdFactory;
+    delete smFactory;
 }
        
 void testGDML01GeometryBuilder::init(const std::string &nameList) {
@@ -19,9 +25,6 @@ void testGDML01GeometryBuilder::init(const std::string &nameList) {
     while(getline(gdmlList, idx)) {
         nameCollection.push_back(idx);
     }
-
-    sdFactory = new testGDML01SDFactory;
-    smFactory = new testGDML01SMFactory;
 
     theWorld = new testGDML01DetectorConstruction(nameCollection[0], sdFactory, smFactory);
 
@@ -33,8 +36,20 @@ void testGDML01GeometryBuilder::init(const std::string &nameList) {
         theParaWorldCollection.push_back(fParaWorld);
         theWorld->RegisterParallelWorld(fParaWorld);
     }
+    /*
     // set process, as well as for parrallel SD and fast Simulation
     thePhysicsList = new testGDML01PhysicsList;
     thePhysicsList->setWorld(nameCollection);
     thePhysicsList->setParaFilter(theWorld->getParaFilter());
+    */
 }
+
+void testGDML01GeometryBuilder::cloneParaFilter(std::vector< std::vector<G4String> >& filter) {
+    std::vector< std::vector<G4String> > origin = theWorld->getParaFilter();
+    filter.clear();
+    filter.reserve(origin.size());
+    for(int i=0; i<origin.size(); i++) {
+        filter.push_back(origin[i]);
+    }
+}
+

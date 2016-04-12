@@ -23,7 +23,7 @@ Version: 0.0.1
 #include "G4UIExecutive.hh"
 #endif
 
-#include "testGDML01GeometryBuilder.h"
+#include "testGDML01GSPBuilder.h"
 #include "testGDML01PhysicsList.h"
 #include "testGDML01ActionInitialization.h"
 //#include "testGDML01SteppingVerbose.h"
@@ -48,9 +48,8 @@ int main(int argc, char** argv) {
     //G4VSteppingVerbose::SetInstance(verbosity);
 
     // UserInitialization class - mandatory
-    testGDML01GeometryBuilder* theBuilder = new testGDML01GeometryBuilder;
+    testGDML01GSPBuilder* theBuilder = new testGDML01GSPBuilder;
     theBuilder->init("gdmlList.txt");
-    theBuilder->getWorld();
     runManager->SetUserInitialization(theBuilder->getWorld());
     //G4VUserPhysicsList* thePhysicsList = new QGSP_BERT();
     //G4VUserPhysicsList* thePhysicsList = new testGDML01PhysicsList;
