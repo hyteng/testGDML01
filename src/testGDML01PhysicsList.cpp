@@ -221,7 +221,7 @@ void testGDML01PhysicsList::setWorld(std::vector<G4String>& nameCollection) {
 
 G4bool testGDML01PhysicsList::paraFilter(const G4String& particle, int idx) {
     if(idx >= (*paraFilterList).size())
-        return false;
+        return true;
     //if((*paraFilterList)[idx][0] == "all")
     if(find((*paraFilterList)[idx].begin(), (*paraFilterList)[idx].end(), "all") != (*paraFilterList)[idx].end())
         return true;

@@ -45,7 +45,7 @@ void testGDML01GeometryBuilder::init(const std::string &nameList) {
 }
 
 void testGDML01GeometryBuilder::cloneParaFilter(std::vector< std::vector<G4String> >& filter) {
-    std::vector< std::vector<G4String> > origin = theWorld->getParaFilter();
+    std::vector< std::vector<G4String> > &origin = theWorld->getParaFilter();
     filter.clear();
     filter.reserve(origin.size());
     for(int i=0; i<origin.size(); i++) {
