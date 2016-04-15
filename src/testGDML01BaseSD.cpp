@@ -9,16 +9,19 @@
 
 #include "testGDML01BaseSD.h"
 
-testGDML01BaseSD::testGDML01BaseSD(G4String& name, std::vector<G4String>& hits, std::vector<G4String>& para) : G4VSensitiveDetector(name) {
+testGDML01BaseSD::testGDML01BaseSD(G4String& name, std::vector<G4String>& hits, std::vector<G4String>& par) : G4VSensitiveDetector(name) {
     //hitFactory = new testGDML01BaseHitFactory;
     collectionName.clear();
     for(int i=0; i<hits.size(); i++)
         collectionName.insert(hits[i]);
+    para = par;
+    sdPara = new testGDML01BaseSDPara(para);
 }
 
 testGDML01BaseSD::~testGDML01BaseSD() {
     //delete hitFactory;
     collectionName.clear();
+    delete sdPara;
 }
 
 void testGDML01BaseSD::setHitsCollectionName(std::vector<G4String>& hits) {

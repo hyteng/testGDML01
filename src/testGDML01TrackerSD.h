@@ -16,7 +16,6 @@ class testGDML01TrackerSD :public testGDML01BaseSD {
 
       void Initialize(G4HCofThisEvent* HCE);
       G4bool ProcessHits(G4Step* aStep, G4TouchableHistory* roHist=NULL);
-      void EndOfEvent(G4HCofThisEvent* HCE);
 
   protected:
       virtual G4HitsCollection* createHitsCollection(G4String& sdName, G4String& collectionName) {return new testGDML01TrackerHitsCollection(sdName, collectionName);};

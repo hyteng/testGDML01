@@ -115,21 +115,3 @@ G4bool testGDML01TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory* roHis
     
     return false;
 }
-
-void testGDML01TrackerSD::EndOfEvent(G4HCofThisEvent* HCE) {
-    if (verboseLevel>0) { 
-        G4int NbHits = ((testGDML01TrackerHitsCollection*)hitsList[0])->entries();
-        G4cout << "\n-------->Hits Collection: in this event they are " << NbHits 
-            << " hits in the tracker chambers: " << G4endl;
-        for(G4int i=0;i<NbHits;i++) (*(testGDML01TrackerHitsCollection*)(hitsList[0]))[i]->Print();
-    }
-    static G4int HCID = -1;
-    if(HCID<0)
-        HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
-    HCE->AddHitsCollection(HCID, hitsList[0]); 
-
-    for(int i=0;i<5;i++)
-        for(int j=0;j<400;j++)
-            tracker[i][j] = -1;
-
-}

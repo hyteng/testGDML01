@@ -19,19 +19,19 @@ class G4TouchableHistory;
 
 class testGDML01BaseSD :public G4VSensitiveDetector {
     public:
-        testGDML01BaseSD(G4String& name, std::vector<G4String>& hits, std::vector<G4String>& para);
+        testGDML01BaseSD(G4String& name, std::vector<G4String>& hits, std::vector<G4String>& par);
         virtual ~testGDML01BaseSD();
 
         void setHitsCollectionName(std::vector<G4String> &hits);
         void Initialize(G4HCofThisEvent* HCE);
         G4bool ProcessHits(G4Step* aStep, G4TouchableHistory* roHist=NULL)=0;
-        void EndOfEvent(G4HCofThisEvent* HCE)=0;
 
     protected:
         virtual G4HitsCollection* createHitsCollection(G4String& sdName, G4String& collectionName)=0;
 
         std::vector<G4HitsCollection*> hitsList;
         std::vector<G4int> hitsID;
+        std::vector<G4String> para;
         testGDML01BaseSDPara* sdPara;
 };
 #endif
