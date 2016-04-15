@@ -6,16 +6,15 @@
 
 #include "testGDML01TrackerHit.h"
 
-G4ThreadLocal G4Allocator<testGDML01TrackerHit>* testGDML01TrackerHitAllocator=0;
+G4ThreadLocal G4Allocator<testGDML01TrackerHit>* testGDML01TrackerHitAllocator=NULL;
 
+testGDML01TrackerHit::testGDML01TrackerHit() : testGDML01BaseHit() {
+}
 
-testGDML01TrackerHit::testGDML01TrackerHit() {}
+testGDML01TrackerHit::~testGDML01TrackerHit() {
+}
 
-
-testGDML01TrackerHit::~testGDML01TrackerHit() {}
-
-
-testGDML01TrackerHit::testGDML01TrackerHit(const testGDML01TrackerHit& right) : G4VHit() {
+testGDML01TrackerHit::testGDML01TrackerHit(const testGDML01TrackerHit& right) : testGDML01BaseHit() {
     trackID   = right.trackID;
     chamberNb = right.chamberNb;
     strip     = right.strip;
@@ -25,7 +24,6 @@ testGDML01TrackerHit::testGDML01TrackerHit(const testGDML01TrackerHit& right) : 
     digiPos   = right.digiPos;
     error     = right.error;
 }
-
 
 const testGDML01TrackerHit& testGDML01TrackerHit::operator=(const testGDML01TrackerHit& right) {
     trackID   = right.trackID;
@@ -40,11 +38,9 @@ const testGDML01TrackerHit& testGDML01TrackerHit::operator=(const testGDML01Trac
     return *this;
 }
 
-
 G4int testGDML01TrackerHit::operator==(const testGDML01TrackerHit& right) const {
     return (this==&right) ? 1 : 0;
 }
-
 
 void testGDML01TrackerHit::Draw() {
 
@@ -61,9 +57,7 @@ void testGDML01TrackerHit::Draw() {
     }
 }
 
-
 void testGDML01TrackerHit::Print() {
-
     G4cout << "  trackID: " << trackID << "  chamberNb: " << chamberNb << " strip: " << strip
         << "  energy deposit: " << G4BestUnit(edep,"Energy")
         << "  hit position: " << G4BestUnit(hitPos,"Length") 

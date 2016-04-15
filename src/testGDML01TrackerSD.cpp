@@ -9,26 +9,27 @@
 
 #include "testGDML01TrackerSD.h"
 
-testGDML01TrackerSD::testGDML01TrackerSD(G4String name, G4double eff, G4bool noise, G4double th) : G4VSensitiveDetector(name) {
-    G4String HCname;
-    collectionName.insert(HCname="trackerCollection");
+testGDML01TrackerSD::testGDML01TrackerSD(G4String& name, std::vector<G4String>& hits, std::vector<G4String>& para, G4double eff, G4bool noise, G4double th) : testGDML01BaseSD(name, hits, para) {
+    //collectionName.insert("hitsList[0]");
     efficiency = eff;
     addNoise = noise;
     noiseTH = th;
 }
 
-testGDML01TrackerSD::~testGDML01TrackerSD() { 
+testGDML01TrackerSD::~testGDML01TrackerSD() {
 }
 
 void testGDML01TrackerSD::Initialize(G4HCofThisEvent* HCE) {
-    trackerCollection = new testGDML01TrackerHitsCollection(SensitiveDetectorName, collectionName[0]); 
+    /*
+    hitsList[0] = new testGDML01TrackerHitsCollection(SensitiveDetectorName, collectionName[0]); 
     static G4int HCID = -1;
     if(HCID<0) { 
         HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]); 
     }
-    HCE->AddHitsCollection(HCID, trackerCollection);
-
-    G4cout << "SD Initialize: " << HCID << G4endl;
+    HCE->AddHitsCollection(HCID, hitsList[0]);
+    */
+    testGDML01BaseSD::Initialize(HCE);
+    G4cout << "SD Initialize: " << G4endl;
     for(int i=0;i<5;i++)
         for(int j=0;j<400;j++)
             tracker[i][j] = -1;
@@ -103,11 +104,11 @@ G4bool testGDML01TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory* roHis
 
                 G4ThreeVector P = aStep->GetTrack()->GetMomentum();
                 newHit->SetPt(P.mag()/GeV);
-                tracker[ROPVNumber][stripPVNumber] = trackerCollection->insert(newHit) - 1;
+                tracker[ROPVNumber][stripPVNumber] = ((testGDML01TrackerHitsCollection*)hitsList[0])->insert(newHit) - 1;
                 G4cout << "stripPVNumber: " << stripPVNumber << ", StripLocalPosition: " << StripLocalPosition << ", GlobalDigiPosition: " << GlobalDigiPosition << ", localError: " << localError << G4endl;
             }
             else
-                (*trackerCollection)[tracker[ROPVNumber][stripPVNumber]]->AddEdep(edep);
+                (*(testGDML01TrackerHitsCollection*)(hitsList[0]))[tracker[ROPVNumber][stripPVNumber]]->AddEdep(edep);
             return true;
         }
     }
@@ -117,15 +118,15 @@ G4bool testGDML01TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory* roHis
 
 void testGDML01TrackerSD::EndOfEvent(G4HCofThisEvent* HCE) {
     if (verboseLevel>0) { 
-        G4int NbHits = trackerCollection->entries();
+        G4int NbHits = ((testGDML01TrackerHitsCollection*)hitsList[0])->entries();
         G4cout << "\n-------->Hits Collection: in this event they are " << NbHits 
             << " hits in the tracker chambers: " << G4endl;
-        for (G4int i=0;i<NbHits;i++) (*trackerCollection)[i]->Print();
+        for(G4int i=0;i<NbHits;i++) (*(testGDML01TrackerHitsCollection*)(hitsList[0]))[i]->Print();
     }
     static G4int HCID = -1;
     if(HCID<0)
         HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
-    HCE->AddHitsCollection(HCID, trackerCollection); 
+    HCE->AddHitsCollection(HCID, hitsList[0]); 
 
     for(int i=0;i<5;i++)
         for(int j=0;j<400;j++)

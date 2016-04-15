@@ -16,7 +16,7 @@ public:
     testGDML01SDFactory();
     ~testGDML01SDFactory();
 
-    G4VSensitiveDetector* createSD(G4String name);
+    G4VSensitiveDetector* createSD(G4String& name, std::vector<G4String>& hits, std::vector<G4String>& para);
 
 private:
     /* data */  

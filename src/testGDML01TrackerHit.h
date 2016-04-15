@@ -1,12 +1,13 @@
 #ifndef testGDML01TrackerHit_h
 #define testGDML01TrackerHit_h 1
 
-#include "G4VHit.hh"
 #include "G4THitsCollection.hh"
 #include "G4Allocator.hh"
 #include "G4ThreeVector.hh"
 
-class testGDML01TrackerHit : public G4VHit {
+#include "testGDML01BaseHit.h"
+
+class testGDML01TrackerHit :public testGDML01BaseHit {
     public:
         testGDML01TrackerHit();
         ~testGDML01TrackerHit();
@@ -49,7 +50,6 @@ class testGDML01TrackerHit : public G4VHit {
         G4ThreeVector hitPos;
         G4ThreeVector digiPos;
         G4ThreeVector error;
-        
 };
 
 typedef G4THitsCollection<testGDML01TrackerHit> testGDML01TrackerHitsCollection;
@@ -61,7 +61,6 @@ inline void* testGDML01TrackerHit::operator new(size_t) {
         testGDML01TrackerHitAllocator = new G4Allocator<testGDML01TrackerHit>;
     return (void *) testGDML01TrackerHitAllocator->MallocSingle();
 }
-
 
 inline void testGDML01TrackerHit::operator delete(void *aHit) {
     testGDML01TrackerHitAllocator->FreeSingle((testGDML01TrackerHit*) aHit);

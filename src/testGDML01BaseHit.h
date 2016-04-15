@@ -2,13 +2,23 @@
 #define testGDML01BaseHit_h 1
 
 #include "G4VHit.hh"
+#include "G4THitsCollection.hh"
+#include "G4Allocator.hh"
+#include "G4ThreeVector.hh"
 
 class testGDML01BaseHit :public G4VHit {
     public:
         testGDML01BaseHit();
         virtual ~testGDML01BaseHit();
 
-    private:
+        testGDML01BaseHit(const testGDML01BaseHit&);
+        const testGDML01BaseHit& operator=(const testGDML01BaseHit&);
+        G4int operator==(const testGDML01BaseHit&) const;
+
+        inline void* operator new(size_t);
+        inline void  operator delete(void*);
+
+    protected:
         /* data */
 };
 

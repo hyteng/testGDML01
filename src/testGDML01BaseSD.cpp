@@ -5,31 +5,37 @@
  *    Author: Haiyun Teng, haiyun.teng@gmail.com
  *   Company: CSNS
  */
+#include "G4SDManager.hh"
+
 #include "testGDML01BaseSD.h"
 
-testGDML01BaseSD::testGDML01BaseSD(G4String name) : G4VSensitiveDetector(name) {
-    hitFactory = new testGDML01BaseHitFactory;
+testGDML01BaseSD::testGDML01BaseSD(G4String& name, std::vector<G4String>& hits, std::vector<G4String>& para) : G4VSensitiveDetector(name) {
+    //hitFactory = new testGDML01BaseHitFactory;
+    collectionName.clear();
+    for(int i=0; i<hits.size(); i++)
+        collectionName.insert(hits[i]);
 }
 
 testGDML01BaseSD::~testGDML01BaseSD() {
-    delete hitFactory;
+    //delete hitFactory;
+    collectionName.clear();
 }
 
-
-void testGDML01BaseSD::setHitsCollectionName(std::vector<G4String> &hitsCN) {
-    for(int i=0; i<hitsCN.size(); i++)
-        collectionName.isert(hitsCN[i]);
+void testGDML01BaseSD::setHitsCollectionName(std::vector<G4String>& hits) {
+    collectionName.clear();
+    for(int i=0; i<hits.size(); i++)
+        collectionName.insert(hits[i]);
 }
 
 void testGDML01BaseSD::Initialize(G4HCofThisEvent* HCE) {
-    hitsCollectionList.resize(collectionName.size());
-    static G4int HCID;
+    hitsList.resize(collectionName.size());
+    hitsID.resize(collectionName.size(), -1);
     for(int i=0; i<collectionName.size(); i++) {
-        hitCollection[i] = hitFactory->createHitsCollection(SensitiveDetectorName, collectionName[i]); 
-        HCID = -1;
-        if(HCID<0) { 
-            HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[i]); 
+        hitsList[i] = createHitsCollection(SensitiveDetectorName, collectionName[i]);
+        if(hitsID[i] == -1) {
+            hitsID[i] = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[i]);
         }
-        HCE->AddHitsCollection(HCID, hitCollection[i]);
+        HCE->AddHitsCollection(hitsID[i], hitsList[i]);
     }
 }
+

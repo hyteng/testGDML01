@@ -100,6 +100,9 @@ void testGDML01ParallelWorld::Construct() {
 void testGDML01ParallelWorld::ConstructSD() {
     G4SDManager* SDman = G4SDManager::GetSDMpointer();
 
+    std::vector<G4String> hits;
+    std::vector<G4String> para;
+
     const G4GDMLAuxMapType* auxmap = fParser->GetAuxMap();
     G4bool isSD = false;
     for(G4GDMLAuxMapType::const_iterator iter=auxmap->begin();iter!=auxmap->end(); iter++) {
@@ -108,9 +111,20 @@ void testGDML01ParallelWorld::ConstructSD() {
         for(G4GDMLAuxListType::const_iterator vit=(*iter).second.begin();vit!=(*iter).second.end(); vit++) {
             if((*vit).type=="SensDet") {
                 G4String sdName = (*vit).value;
+                hits.clear();
+                para.clear();
+                if(vit->auxList) {
+                    const G4GDMLAuxListType* auxInfoList = vit->auxList;
+                    for(std::vector<G4GDMLAuxStructType>::const_iterator iaux=auxInfoList->begin(); iaux!=auxInfoList->end(); iaux++) {
+                        if(iaux->type == "HitCollection")
+                            hits.push_back(iaux->value);
+                        if(iaux->type.find("Para_") != std::string::npos)
+                            para.push_back(iaux->value);
+                    }
+                }
                 G4VSensitiveDetector* mydet = SDman->FindSensitiveDetector(sdName);
                 if(mydet == NULL) {
-                    mydet = sdFactory->createSD(sdName);
+                    mydet = sdFactory->createSD(sdName, hits, para);
                     SDman->AddNewDetector(mydet);
                 }
 

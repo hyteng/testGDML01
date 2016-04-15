@@ -15,10 +15,10 @@ testGDML01SDFactory::testGDML01SDFactory() {
 testGDML01SDFactory::~testGDML01SDFactory() {
 }
 
-G4VSensitiveDetector* testGDML01SDFactory::createSD(G4String name) {
+G4VSensitiveDetector* testGDML01SDFactory::createSD(G4String& name, std::vector<G4String>& hits, std::vector<G4String>& para) {
     G4VSensitiveDetector* sd = NULL;
     if(name == "tracker")
-        sd = (G4VSensitiveDetector*) new testGDML01TrackerSD(name);
+        sd = (G4VSensitiveDetector*) new testGDML01TrackerSD(name, hits, para);
 
     return sd;
 }
