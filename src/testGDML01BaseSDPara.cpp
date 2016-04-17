@@ -16,3 +16,5 @@ testGDML01BaseSDPara::testGDML01BaseSDPara(std::vector<G4String>& p) {
 testGDML01BaseSDPara::~testGDML01BaseSDPara() {
 }
 
+void testGDML01BaseSDPara::parameterisation(void* p0, void* ret) {
+}

@@ -17,6 +17,7 @@ class testGDML01BaseSDPara {
         testGDML01BaseSDPara(std::vector<G4String>& p);
         virtual ~testGDML01BaseSDPara();
 
+        virtual void parameterisation(void* p0, void* ret);
     private:
         std::vector<G4String> para;
 };

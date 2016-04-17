@@ -26,6 +26,7 @@
 #include "G4ios.hh"
 
 #include <sstream>
+#include <vector>
 #include "G4VSensitiveDetector.hh"
 #include "G4VFastSimulationModel.hh"
 
@@ -79,7 +80,7 @@ G4VPhysicalVolume* testGDML01DetectorConstruction::Construct() {
         fParser->Write(fWriteFile, fWorldPhysVol, true, "./extSchema/testExtension.xsd");
 
     simRegionList.clear();
-    ownFilterList.clear();
+    paraFilterList.clear();
     const G4GDMLAuxMapType* auxmap = fParser->GetAuxMap();
     G4cout << "Found " << auxmap->size() << " volume(s) with auxiliary information." << G4endl << G4endl;
     for(G4GDMLAuxMapType::const_iterator iter=auxmap->begin(); iter!=auxmap->end(); iter++) {
@@ -89,6 +90,7 @@ G4VPhysicalVolume* testGDML01DetectorConstruction::Construct() {
         G4double electronCut = -1.0;
         G4double positronCut = -1.0;
         G4bool isRegion = false;
+        ownFilterList.clear();
         G4cout << "Volume " << myvol->GetName() << " has the following list of auxiliary information: " << G4endl << G4endl;
         for(G4GDMLAuxListType::const_iterator vit=(*iter).second.begin(); vit!=(*iter).second.end(); vit++) {
             G4cout << "--> Type: " << (*vit).type << " Value: " << (*vit).value << G4endl;
@@ -98,26 +100,53 @@ G4VPhysicalVolume* testGDML01DetectorConstruction::Construct() {
                 simRegionList.push_back(new G4Region(simName));
                 simRegionList.back()->AddRootLogicalVolume(myvol);
                 simRegionList.back()->SetProductionCuts(new G4ProductionCuts());
+                if(vit->auxList) {
+                    const G4GDMLAuxListType* auxInfoList = vit->auxList;
+                    for(std::vector<G4GDMLAuxStructType>::const_iterator iaux=auxInfoList->begin(); iaux!=auxInfoList->end(); iaux++) {
+                        if((*iaux).type == "generalCut") {
+                            std::stringstream tmp((*iaux).value);
+                            tmp >> generalCut;
+                        }
+                        if((*iaux).type == "gammaCut") {
+                            std::stringstream tmp((*iaux).value);
+                            tmp >> gammaCut;
+                        }
+                        if((*iaux).type == "electronCut") {
+                            std::stringstream tmp((*iaux).value);
+                            tmp >> electronCut;
+                        }
+                        if((*iaux).type == "positronCut") {
+                            std::stringstream tmp((*iaux).value);
+                            tmp >> positronCut;
+                        }
+                        if((*iaux).type == "particleFilter") {
+                            ownFilterList.push_back((*iaux).value);
+                        }
+
+                    }
+                }
             }
-            if((*vit).type == "generalCut") {
-                std::stringstream tmp((*vit).value);
-                tmp >> generalCut;
-            }
-            if((*vit).type == "gammaCut") {
-                std::stringstream tmp((*vit).value);
-                tmp >> gammaCut;
-            }
-            if((*vit).type == "electronCut") {
-                std::stringstream tmp((*vit).value);
-                tmp >> electronCut;
-            }
-            if((*vit).type == "positronCut") {
-                std::stringstream tmp((*vit).value);
-                tmp >> positronCut;
-            }
-            if((*vit).type == "particleFilter") {
-                ownFilterList.push_back((*vit).value);
-            }
+            /*
+               if((*vit).type == "generalCut") {
+               std::stringstream tmp((*vit).value);
+               tmp >> generalCut;
+               }
+               if((*vit).type == "gammaCut") {
+               std::stringstream tmp((*vit).value);
+               tmp >> gammaCut;
+               }
+               if((*vit).type == "electronCut") {
+               std::stringstream tmp((*vit).value);
+               tmp >> electronCut;
+               }
+               if((*vit).type == "positronCut") {
+               std::stringstream tmp((*vit).value);
+               tmp >> positronCut;
+               }
+               if((*vit).type == "particleFilter") {
+               ownFilterList.push_back((*vit).value);
+               }
+               */
         }
 
         if(isRegion) {
@@ -125,9 +154,9 @@ G4VPhysicalVolume* testGDML01DetectorConstruction::Construct() {
             if(gammaCut!=-1.0) simRegionList.back()->GetProductionCuts()->SetProductionCut(gammaCut, idxG4GammaCut);
             if(electronCut!=-1.0) simRegionList.back()->GetProductionCuts()->SetProductionCut(electronCut, idxG4ElectronCut);
             if(positronCut!=-1.0) simRegionList.back()->GetProductionCuts()->SetProductionCut(positronCut, G4ProductionCuts::GetIndex("e+"));
+            paraFilterList.push_back(ownFilterList);
         }
     }
-    paraFilterList.push_back(ownFilterList);
     G4cout << G4endl;
 
     return fWorldPhysVol;
@@ -138,6 +167,10 @@ void testGDML01DetectorConstruction::ConstructSDandField() {
 
     std::vector<G4String> hits;
     std::vector<G4String> para;
+
+    std::vector<std::pair<G4String, std::vector<G4String> > > prims;
+    std::vector<G4String> filters;
+    std::vector<G4int> depths;
 
     const G4GDMLAuxMapType* auxmap = fParser->GetAuxMap();
     G4cout << "Check " << auxmap->size() << " volume(s) with auxiliary information." << G4endl << G4endl;
@@ -169,6 +202,49 @@ void testGDML01DetectorConstruction::ConstructSDandField() {
                     G4cout << "get SD from gdml and create by sdFactory" << G4endl;
                     myvol->SetSensitiveDetector(mydet);
                 }
+            }
+            if((*vit).type == "Scorer") {
+                G4String sdName = (*vit).value;
+                prims.clear();
+                depths.clear();
+                para.clear();
+                if(vit->auxList) {
+                    const G4GDMLAuxListType* auxInfoList = vit->auxList;
+                    for(std::vector<G4GDMLAuxStructType>::const_iterator iaux=auxInfoList->begin(); iaux!=auxInfoList->end(); iaux++) {
+                        if(iaux->type == "PrimitiveName") {
+                            filters.clear();
+                            int vdep = 0;
+                            if(iaux->auxList) {
+                                const G4GDMLAuxListType* auxInfoList2 = iaux->auxList;
+                                for(std::vector<G4GDMLAuxStructType>::const_iterator iaux2=auxInfoList2->begin(); iaux2!=auxInfoList2->end(); iaux2++) {
+                                    if(iaux2->type == "Depth") {
+                                        std::stringstream sdep(iaux2->value);
+                                        sdep >> vdep;
+                                    }
+                                    if(iaux2->type == "ParticleFilter") {
+                                        filters.push_back(iaux2->value);
+                                    }
+
+                                }
+                            }
+                            prims.push_back(std::pair<G4String, std::vector<G4String> >(iaux->value, filters));
+                            depths.push_back(vdep);
+                        }
+                        if(iaux->type.find("Para_") != std::string::npos)
+                            para.push_back(iaux->value);
+                    }
+                }
+                G4VSensitiveDetector* mydet = SDman->FindSensitiveDetector(sdName);
+                if(mydet == NULL) {
+                    mydet = sdFactory->createScorer(sdName, prims, depths, para);
+                    SDman->AddNewDetector(mydet);
+                }
+
+                if(mydet != NULL) {
+                    G4cout << "get SD from gdml and create by sdFactory" << G4endl;
+                    myvol->SetSensitiveDetector(mydet);
+                }
+
             }
         }
     }

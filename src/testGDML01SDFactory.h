@@ -10,6 +10,9 @@
 #define testGDML01SDFactory_h 1
 
 #include "G4VSensitiveDetector.hh"
+#include "G4MultiFunctionalDetector.hh"
+
+#include <vector>
 
 class testGDML01SDFactory {
 public:
@@ -17,6 +20,7 @@ public:
     ~testGDML01SDFactory();
 
     G4VSensitiveDetector* createSD(G4String& name, std::vector<G4String>& hits, std::vector<G4String>& para);
+    G4MultiFunctionalDetector* createScorer(G4String& name, std::vector<std::pair<G4String, std::vector<G4String> > >& prims, std::vector<G4int>& depths, std::vector<G4String>& para);
 
 private:
     /* data */  

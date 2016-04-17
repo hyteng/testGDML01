@@ -45,7 +45,7 @@ void testGDML01ParallelWorld::Construct() {
         fParser->Write(fWriteFile, fWorldPhysVol, true, "./extSchema/testExtension.xsd");
 
     simRegionList.clear();
-    ownFilterList.clear();
+    //paraFilterList.clear();
     const G4GDMLAuxMapType* auxmap = fParser->GetAuxMap();
     G4cout << "paraWorld " << GetName() << " found " << auxmap->size() << " volume(s) with auxiliary information." << G4endl << G4endl;
     for(G4GDMLAuxMapType::const_iterator iter=auxmap->begin(); iter!=auxmap->end(); iter++) {
@@ -55,6 +55,7 @@ void testGDML01ParallelWorld::Construct() {
         G4double electronCut = -1.0;
         G4double positronCut = -1.0;
         G4bool isRegion = false;
+        ownFilterList.clear();
         G4cout << "Volume " << myvol->GetName() << " has the following list of auxiliary information: " << G4endl << G4endl;
         for(G4GDMLAuxListType::const_iterator vit=(*iter).second.begin(); vit!=(*iter).second.end(); vit++) {
             G4cout << "--> Type: " << (*vit).type << " Value: " << (*vit).value << G4endl;
@@ -91,9 +92,9 @@ void testGDML01ParallelWorld::Construct() {
             if(gammaCut!=-1.0) simRegionList.back()->GetProductionCuts()->SetProductionCut(gammaCut, idxG4GammaCut);
             if(electronCut!=-1.0) simRegionList.back()->GetProductionCuts()->SetProductionCut(electronCut, idxG4ElectronCut);
             if(positronCut!=-1.0) simRegionList.back()->GetProductionCuts()->SetProductionCut(positronCut, G4ProductionCuts::GetIndex("e+"));
+            paraFilterList->push_back(ownFilterList);
         }
     }
-    paraFilterList->push_back(ownFilterList);
     G4cout << G4endl;
 }
 

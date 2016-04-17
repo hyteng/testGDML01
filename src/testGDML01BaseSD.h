@@ -12,6 +12,7 @@
 
 #include "testGDML01BaseHit.h"
 #include "testGDML01BaseSDPara.h"
+#include "testGDML01DetGeometry.h"
 
 class G4Step;
 class G4HCofThisEvent;
@@ -19,7 +20,7 @@ class G4TouchableHistory;
 
 class testGDML01BaseSD :public G4VSensitiveDetector {
     public:
-        testGDML01BaseSD(G4String& name, std::vector<G4String>& hits, std::vector<G4String>& par);
+        testGDML01BaseSD(G4String& name, std::vector<G4String>& hits, std::vector<G4String>& pars);
         virtual ~testGDML01BaseSD();
 
         void setHitsCollectionName(std::vector<G4String> &hits);
@@ -33,5 +34,6 @@ class testGDML01BaseSD :public G4VSensitiveDetector {
         std::vector<G4int> hitsID;
         std::vector<G4String> para;
         testGDML01BaseSDPara* sdPara;
+        testGDML01DetGeometry* detGeom;
 };
 #endif

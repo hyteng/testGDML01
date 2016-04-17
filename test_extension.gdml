@@ -16,7 +16,8 @@
 
         <!-- test volume -->
         <constant name="test_box_size" value="100.0"/>
-        <position name="test_position" x="0" y="0" z="100"/>
+        <position name="test_position1" x="0" y="0" z="100"/>
+        <position name="test_position2" x="0" y="0" z="300"/>
     </define>
 
     <materials>
@@ -60,12 +61,28 @@
     </solids>
 
     <structure>
-        <volume name="test_volume">
+        <volume name="test_volume1">
             <materialref ref="Air"/>
             <solidref ref="test_box"/>
-            <auxiliary auxtype="SensDet" auxvalue="tracker"/>
+            <auxiliary auxtype="SensDet" auxvalue="tracker">
+                <auxiliary auxtype="HitCollection" auxvalue="trackerHit"/>
+            </auxiliary>
             <auxiliary auxtype="Color" auxvalue="Blue"/>
             <auxiliary auxtype="FastSimModel" auxvalue="MuonModel"/>
+            <!-- color extension element -->	
+            <colorref ref="test_color"/> 
+        </volume>
+        
+        <volume name="test_volume2">
+            <materialref ref="Air"/>
+            <solidref ref="test_box"/>
+            <auxiliary auxtype="Scorer" auxvalue="multiScorer">
+                <auxiliary auxtype="PrimitiveName" auxvalue="NofSecondary">
+                    <auxiliary auxtype="Depth" auxvalue="0"/>
+                    <auxiliary auxtype="ParticleFilter" auxvalue="mu+"/>
+                    <auxiliary auxtype="ParticleFilter" auxvalue="mu-"/> 
+                </auxiliary>
+            </auxiliary>
             <!-- color extension element -->	
             <colorref ref="test_color"/> 
         </volume>
@@ -74,9 +91,14 @@
             <materialref ref="Air"/>
             <solidref ref="world_box"/>
             <physvol>
-                <volumeref ref="test_volume"/>
-                <positionref ref="test_position"/>
+                <volumeref ref="test_volume1"/>
+                <positionref ref="test_position1"/>
             </physvol>
+            <physvol>
+                <volumeref ref="test_volume2"/>
+                <positionref ref="test_position2"/>
+            </physvol>
+
         </volume>
     </structure>
 
