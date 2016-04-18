@@ -52,6 +52,12 @@ G4bool testGDML01TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory* roHis
     G4String ROPVName = ROPV->GetName();
     G4int ROPVNumber = ROPV->GetCopyNo();
     G4cout << "ROVolumeName: " << ROPVName << ", CopyNo: " << ROPVNumber << ". Strips: " << touchable->GetVolume()->GetLogicalVolume()->GetNoDaughters() << G4endl;
+
+    G4VPhysicalVolume* worldPV = G4TransportationManager::GetTransportationManager()->GetParallelWorld("");
+    navi = new G4Navigator();
+    navi->SetWorldVolume(worldPV);
+    navi->LocateGlobalPointAndSetup(preStepPoint->GetPosition());
+    navi->CreateTouchableHistory();
     
     return true;
 }
