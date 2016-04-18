@@ -7,6 +7,11 @@
 #include "G4Box.hh"
 #include "Randomize.hh"
 
+#include "G4TransportationManager.hh"
+#include "G4Navigator.hh"
+#include "G4TouchableHistoryHandle.hh"
+
+
 #include "testGDML01TrackerSD.h"
 
 testGDML01TrackerSD::testGDML01TrackerSD(G4String& name, std::vector<G4String>& hits, std::vector<G4String>& pars, G4double eff, G4bool noise, G4double th) : testGDML01BaseSD(name, hits, pars) {
@@ -53,11 +58,14 @@ G4bool testGDML01TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory* roHis
     G4int ROPVNumber = ROPV->GetCopyNo();
     G4cout << "ROVolumeName: " << ROPVName << ", CopyNo: " << ROPVNumber << ". Strips: " << touchable->GetVolume()->GetLogicalVolume()->GetNoDaughters() << G4endl;
 
-    G4VPhysicalVolume* worldPV = G4TransportationManager::GetTransportationManager()->GetParallelWorld("");
-    navi = new G4Navigator();
+    G4VPhysicalVolume* worldPV = G4TransportationManager::GetTransportationManager()->GetNavigatorForTracking()->GetWorldVolume();//->GetParallelWorld("");
+    G4Navigator* navi = new G4Navigator();
     navi->SetWorldVolume(worldPV);
-    navi->LocateGlobalPointAndSetup(preStepPoint->GetPosition());
-    navi->CreateTouchableHistory();
-    
+    G4VPhysicalVolume* naviVolume = navi->LocateGlobalPointAndSetup(preStepPoint->GetPosition());
+    G4TouchableHistoryHandle naviTouchableHandle = navi->CreateTouchableHistoryHandle();
+    G4ThreeVector naviGlobalPosition = preStepPoint->GetPosition();
+    G4ThreeVector naviLocalPosition = naviTouchableHandle->GetHistory()->GetTopTransform().TransformPoint(naviGlobalPosition);
+    G4cout << "Navi: PV " << naviTouchableHandle->GetVolume()->GetName() << ", GPos " << naviGlobalPosition << ", LPos " << naviLocalPosition << G4endl;
+    G4cout << "preStep: " << touchable->GetHistory()->GetTopTransform().TransformPoint(naviGlobalPosition) << G4endl;
     return true;
 }
