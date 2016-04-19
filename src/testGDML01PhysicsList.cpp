@@ -146,6 +146,7 @@ void testGDML01PhysicsList::AddParameterisation() {
     paraSMProcess.clear();
     paraSDProcess.clear();
     for(int i=1; i<worldName.size(); i++) {
+        G4cout << "add Process for para world " << worldName[i] << G4endl;
         // -- Fast simulation manager process for "parallel geometry":
         G4FastSimulationManagerProcess* smProcessPara = new G4FastSimulationManagerProcess("smProcessPara_"+worldName[i], worldName[i]);
         paraSMProcess.push_back(smProcessPara);

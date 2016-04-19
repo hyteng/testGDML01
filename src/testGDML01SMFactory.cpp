@@ -17,6 +17,7 @@ testGDML01SMFactory::~testGDML01SMFactory() {
 
 G4VFastSimulationModel* testGDML01SMFactory::createSimModel(G4String name, G4Region* envelope) {
     G4VFastSimulationModel* sm = NULL;
+    G4cout << "create fastSim Model: " << name << G4endl;
     if(name == "MuonModel")
         sm = (G4VFastSimulationModel*) new testGDML01MuonModel(name, envelope);
 

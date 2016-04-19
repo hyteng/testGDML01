@@ -39,7 +39,7 @@ G4VSensitiveDetector* testGDML01SDFactory::createSD(G4String& name, std::vector<
 
 G4MultiFunctionalDetector* testGDML01SDFactory::createScorer(G4String& name, std::vector<std::pair<G4String, std::vector<G4String> > >& prims, std::vector<G4int>& depths, std::vector<G4String>& para) {
     G4MultiFunctionalDetector* det = new testGDML01BaseScorer(name, para);
-    G4cout << "create SD: " << name << "; ";
+    G4cout << "create Scorer: " << name << "; ";
     for(int i=0; i<para.size(); i++)
         G4cout << para[i] << ", ";
     G4cout << G4endl;

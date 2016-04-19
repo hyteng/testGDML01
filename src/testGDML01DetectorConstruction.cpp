@@ -244,7 +244,6 @@ void testGDML01DetectorConstruction::ConstructSDandField() {
                     G4cout << "get SD from gdml and create by sdFactory" << G4endl;
                     myvol->SetSensitiveDetector(mydet);
                 }
-
             }
         }
     }

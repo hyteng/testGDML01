@@ -40,7 +40,7 @@ bool testGDML01MuonModel::ModelTrigger(const G4FastTrack& fastTrack) {
     if(fastTrack.GetPrimaryTrack()->GetKineticEnergy() >= 1*MeV)
         isTrigger = true;
 
-    G4cout << "isTrigger: " << isTrigger << G4endl;
+    //G4cout << "isTrigger: " << isTrigger << G4endl;
     return isTrigger;
 }
 
@@ -57,10 +57,8 @@ void testGDML01MuonModel::DoIt(const G4FastTrack& fastTrack, G4FastStep& fastSte
     G4ThreeVector localPos0 = fastTrack.GetPrimaryTrackLocalPosition();
     G4cout << "PreStep: " << globalPoint0->GetPosition() << ". PrimaryTrack: globalPos0: " << globalPos0 << ", localPos0: " << localPos0 << G4endl;
 
-    if(DetectorName== "trackerLayer" && globalPoint0->GetStepStatus() == fGeomBoundary) {
-        fastStep.ProposeTotalEnergyDeposited(1.*MeV);
-        G4cout << "EnergyDeposited 1Mev" << G4endl;
-    }
+    fastStep.ProposeTotalEnergyDeposited(0.001*MeV);
+    G4cout << "EnergyDeposited 1Kev" << G4endl;
 
     double distance = fastTrack.GetEnvelopeSolid()->DistanceToOut(localPos0, fastTrack.GetPrimaryTrackLocalDirection());
     G4ThreeVector localPos1 = localPos0 + distance*fastTrack.GetPrimaryTrackLocalDirection();
@@ -87,12 +85,13 @@ void testGDML01MuonModel::DoIt(const G4FastTrack& fastTrack, G4FastStep& fastSte
 
     G4VPhysicalVolume* pCurrentVolume = fFakeStep->GetPreStepPoint()->GetPhysicalVolume();
     G4cout << "FakeStep in PV: " << pCurrentVolume->GetName() << G4endl;
-    G4VSensitiveDetector* pSensitive;
-    if(pCurrentVolume != 0) {
-        pSensitive = pCurrentVolume->GetLogicalVolume()->GetSensitiveDetector();
-        G4cout << "FakeStep in SD: " << pSensitive->GetName() << G4endl;
-        if(pSensitive != 0)
-            pSensitive->Hit(fFakeStep);
-    }
-   
+    //G4VSensitiveDetector* pSensitive;
+    //if(pCurrentVolume != 0) {
+    //    G4cout << "check if step into SD:" << G4endl;
+    //    pSensitive = pCurrentVolume->GetLogicalVolume()->GetSensitiveDetector();
+    //    if(pSensitive != NULL) {
+    //        G4cout << "FakeStep in SD: " << pSensitive->GetName() << G4endl;
+    //        pSensitive->Hit(fFakeStep);
+    //    }
+    //}
 }

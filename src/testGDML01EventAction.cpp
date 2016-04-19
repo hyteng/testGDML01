@@ -35,8 +35,8 @@ void testGDML01EventAction::BeginOfEventAction(const G4Event* evt) {
     G4cout << "Event: " << evtNb << G4endl; 
     G4SDManager * SDman = G4SDManager::GetSDMpointer();
 
-    if(trackerCollID==-1)
-        trackerCollID = SDman->GetCollectionID("trackerCollection");
+    //if(trackerCollID==-1)
+    //    trackerCollID = SDman->GetCollectionID("trackerCollection");
 
 }
 
@@ -48,7 +48,7 @@ void testGDML01EventAction::EndOfEventAction(const G4Event* evt) {
     testGDML01TrackerHitsCollection* THC = 0;
     
     G4DigiManager * fDM = G4DigiManager::GetDMpointer();
-    
+    /*
     if(HCE) {
         THC = (testGDML01TrackerHitsCollection*)(HCE->GetHC(trackerCollID));
         if(THC) {
@@ -59,6 +59,7 @@ void testGDML01EventAction::EndOfEventAction(const G4Event* evt) {
         myDM->SetEventNumber(event_id);
         myDM->Digitize();
     }
+    */
 }  
 
 
