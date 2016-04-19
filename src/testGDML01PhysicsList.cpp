@@ -67,7 +67,7 @@ void testGDML01PhysicsList::ConstructParticle() {
     G4MuonMinus::MuonMinusDefinition();
     // nu_e
     G4NeutrinoE::NeutrinoEDefinition();
-    G4MuonMinus::MuonMinusDefinition();
+    G4AntiNeutrinoE::AntiNeutrinoEDefinition();
     // nu_mu
     G4NeutrinoMu::NeutrinoMuDefinition();
     G4AntiNeutrinoMu::AntiNeutrinoMuDefinition();

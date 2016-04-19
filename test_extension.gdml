@@ -64,7 +64,7 @@
         <volume name="test_volume1">
             <materialref ref="Air"/>
             <solidref ref="test_box"/>
-            <auxiliary auxtype="SensDet0" auxvalue="tk">
+            <auxiliary auxtype="SensDet" auxvalue="tracker">
                 <auxiliary auxtype="HitCollection" auxvalue="trackerHit"/>
             </auxiliary>
             <auxiliary auxtype="Color" auxvalue="Blue"/>
@@ -76,7 +76,7 @@
         <volume name="test_volume2">
             <materialref ref="Air"/>
             <solidref ref="test_box"/>
-            <auxiliary auxtype="Scorer0" auxvalue="multiScorer">
+            <auxiliary auxtype="Scorer" auxvalue="multiScorer">
                 <auxiliary auxtype="PrimitiveName" auxvalue="NofSecondary">
                     <auxiliary auxtype="Depth" auxvalue="0"/>
                     <auxiliary auxtype="ParticleFilter" auxvalue="mu+"/>
