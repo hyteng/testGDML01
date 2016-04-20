@@ -68,7 +68,7 @@
                 <auxiliary auxtype="HitCollection" auxvalue="trackerHit"/>
             </auxiliary>
             <auxiliary auxtype="Color" auxvalue="Blue"/>
-            <auxiliary auxtype="FastSimModel" auxvalue="MuonModel0"/>
+            <auxiliary auxtype="FastSimModel" auxvalue="MuonModel"/>
             <!-- color extension element -->	
             <colorref ref="test_color"/> 
         </volume>

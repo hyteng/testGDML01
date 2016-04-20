@@ -10,11 +10,13 @@
 testGDML01GSPBuilder::testGDML01GSPBuilder() {
     geomBuilder = new testGDML01GeometryBuilder();
     phyBuilder = new testGDML01PhysicsBuilder();
+    geomHelper = new testGDML01GeometryHelper;
 }
 
 testGDML01GSPBuilder::~testGDML01GSPBuilder() {
     delete geomBuilder;
     delete phyBuilder;
+    delete geomHelper;
 }
 
 void testGDML01GSPBuilder::init(const std::string &nameList) {
@@ -23,3 +25,8 @@ void testGDML01GSPBuilder::init(const std::string &nameList) {
     phyBuilder->setWorldName(geomBuilder->getNameCollection());
     phyBuilder->init();
 }
+
+void testGDML01GSPBuilder::initDetGeometry() {
+    geomHelper->init();
+}
+

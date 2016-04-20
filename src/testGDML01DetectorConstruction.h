@@ -58,6 +58,7 @@ class testGDML01DetectorConstruction : public G4VUserDetectorConstruction {
         //testGDML01MagneticField* fpMagField;
         //testGDML01SimpleSolenoidPart* fpSolenoidPart;
 
+        G4String worldName;
         G4String fReadFile, fWriteFile;
         G4bool fWritingChoice;
         G4GDMLReadStructure* fReader;

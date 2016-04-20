@@ -47,6 +47,7 @@
 testGDML01DetectorConstruction::testGDML01DetectorConstruction(const G4String& name, testGDML01SDFactory* sd, testGDML01SMFactory* sm) : G4VUserDetectorConstruction() {
     //fpMagField = new testGDML01MagneticField();
     //fpMagField->SetMagFieldValue(G4ThreeVector(0., 0.05, 0.));
+    worldName = name;
     fReadFile = name+".gdml";
     fWriteFile = name+"_out.gdml";
     fWritingChoice = 0;
@@ -76,6 +77,8 @@ G4VPhysicalVolume* testGDML01DetectorConstruction::Construct() {
     G4VPhysicalVolume* fWorldPhysVol;
     fParser->Read(fReadFile, false);
     fWorldPhysVol = fParser->GetWorldVolume(); 
+    G4cout << "tracking world original name: " << fWorldPhysVol->GetName() << G4endl;
+    fWorldPhysVol->SetName(worldName);
     if(fWritingChoice!=0)
         fParser->Write(fWriteFile, fWorldPhysVol, true, "./extSchema/testExtension.xsd");
 

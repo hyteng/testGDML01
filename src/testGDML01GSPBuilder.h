@@ -10,6 +10,7 @@
 
 #include "testGDML01GeometryBuilder.h"
 #include "testGDML01PhysicsBuilder.h"
+#include "testGDML01GeometryHelper.h"
 
 class testGDML01GSPBuilder {
     public:
@@ -20,9 +21,11 @@ class testGDML01GSPBuilder {
         void init(const std::string &nameList);
         G4VUserDetectorConstruction* getWorld() {return geomBuilder->getWorld();};
         G4VUserPhysicsList* getPhysics() {return phyBuilder->getPhysics();};
+        void initDetGeometry();
 
     private:
         testGDML01GeometryBuilder* geomBuilder;
         testGDML01PhysicsBuilder* phyBuilder;
+        testGDML01GeometryHelper* geomHelper;
 };
 #endif

@@ -63,7 +63,9 @@
         <volume name="test_volume_p1">
             <materialref ref="Air"/>
             <solidref ref="test_box_p1"/>
-            <auxiliary auxtype="SensDet0" auxvalue="tk"/>
+            <auxiliary auxtype="SensDet" auxvalue="tracker">
+                <auxiliary auxtype="HitCollection" auxvalue="trackerHit"/>
+            </auxiliary>
             <auxiliary auxtype="Color" auxvalue="Green"/>
             <!-- color extension element -->	
             <colorref ref="test_color"/> 

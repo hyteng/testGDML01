@@ -8,7 +8,7 @@
 #ifndef testGDML01DetGeometry_h
 #define testGDML01DetGeometry_h 1
 
-#include "G4VTouchable.hh"
+#include "G4TouchableHistory.hh"
 
 class testGDML01DetGeometry {
     public:
@@ -16,6 +16,6 @@ class testGDML01DetGeometry {
         virtual ~testGDML01DetGeometry();
 
     protected:
-        //std::map<G4String, std::map<G4String, G4VTouchable> detGeomMap;
+        std::map<G4String, std::map<G4String, G4TouchableHistory> > detGeomMap;
 };
 #endif

@@ -38,8 +38,10 @@ void testGDML01ParallelWorld::Construct() {
     G4LogicalVolume* ghostWorldLV = trackingWorld->GetLogicalVolume();
 
     fParser->Read(fReadFile, false);
-    G4VPhysicalVolume* fWorldPhysVol = fParser->GetWorldVolume(); 
+    G4VPhysicalVolume* fWorldPhysVol = fParser->GetWorldVolume();
+    G4cout << "para world original name: " << fWorldPhysVol->GetName() << G4endl;
     G4LogicalVolume* fWorldLV = fWorldPhysVol->GetLogicalVolume();
+    G4cout << "para world original LV name: " << fWorldLV->GetName() << G4endl;
     G4VPhysicalVolume* ghostWorldPV = (G4VPhysicalVolume*) new G4PVPlacement(0, G4ThreeVector(), fWorldLV, "ghostPhysical", ghostWorldLV, 0, 0);
     if(fWritingChoice!=0)
         fParser->Write(fWriteFile, fWorldPhysVol, true, "./extSchema/testExtension.xsd");

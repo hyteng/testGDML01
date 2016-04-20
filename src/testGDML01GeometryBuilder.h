@@ -7,7 +7,6 @@
 #include "testGDML01ParallelWorld.h"
 #include "testGDML01SDFactory.h"
 #include "testGDML01SMFactory.h"
-//#include "testGDML01PhysicsList.h"
 
 class testGDML01GeometryBuilder {
     public:

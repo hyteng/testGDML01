@@ -59,6 +59,7 @@ int main(int argc, char** argv) {
     runManager->SetUserInitialization(new testGDML01ActionInitialization());
 
     runManager->Initialize();
+    theBuilder->initDetGeometry();
 
     #ifdef G4VIS_USE
     G4VisManager* theVisManager = new G4VisExecutive;
