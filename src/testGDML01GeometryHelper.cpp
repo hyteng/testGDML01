@@ -8,6 +8,8 @@
 #include "G4PhysicalVolumeStore.hh"
 #include "G4VPhysicalVolume.hh"
 #include "G4TransportationManager.hh"
+#include "G4PVReplica.hh"
+#include "G4PVParameterised.hh"
 
 #include "testGDML01GeometryHelper.h"
 
@@ -33,6 +35,14 @@ void testGDML01GeometryHelper::init() {
     for(int i=0; i<pvStore->size(); i++) {
         G4VPhysicalVolume* pvIter = (*pvStore)[i];
         G4cout << pvIter->GetName() << ", ";
+        if(dynamic_cast<G4PVReplica*>(pvIter)) {
+            // loop over replica
+            G4PVReplica* repVol = dynamic_cast<G4PVReplica*>(pvIter);
+        }
+        if(dynamic_cast<G4PVParameterised*>(pvIter)) {
+            // loop over parameterisation
+            G4PVParameterised *paramVol = dynamic_cast<G4PVParameterised*>(pvIter);
+        }
     }
     G4cout << G4endl;
 
