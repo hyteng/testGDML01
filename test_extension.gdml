@@ -16,6 +16,7 @@
 
         <!-- test volume -->
         <constant name="test_box_size" value="100.0"/>
+        <constant name="layer_size" value="20.0"/>
         <position name="test_position1" x="0" y="0" z="100"/>
         <position name="test_position2" x="0" y="0" z="300"/>
     </define>
@@ -41,6 +42,12 @@
             <fraction n="0.2103"  ref="Oxygen_e"/>
             <fraction n="0.0094"  ref="Argon_e"/>
         </material>
+
+        <material Z="13" name="ALU" state="solid">
+            <D unit="g/cm3" value="2.7"/>
+            <atom unit="g/mole" value="26.98"/>
+        </material>
+
     </materials>
 
     <solids>
@@ -58,24 +65,23 @@
             x="test_box_size"
             y="test_box_size"
             z="test_box_size"/>
+        
+        <box lunit="mm"
+            name="layer_box"
+            x="test_box_size"
+            y="test_box_size"
+            z="layer_size"/>
+
     </solids>
 
     <structure>
         <volume name="test_volume1">
             <materialref ref="Air"/>
             <solidref ref="test_box"/>
-            <auxiliary auxtype="SensDet" auxvalue="tracker">
-                <auxiliary auxtype="HitCollection" auxvalue="trackerHit"/>
-            </auxiliary>
             <auxiliary auxtype="Color" auxvalue="Blue"/>
+
             <auxiliary auxtype="FastSimModel" auxvalue="MuonModel"/>
-            <!-- color extension element -->	
-            <colorref ref="test_color"/> 
-        </volume>
-        
-        <volume name="test_volume2">
-            <materialref ref="Air"/>
-            <solidref ref="test_box"/>
+            
             <auxiliary auxtype="Scorer" auxvalue="multiScorer">
                 <auxiliary auxtype="PrimitiveName" auxvalue="NofSecondary">
                     <auxiliary auxtype="Depth" auxvalue="0"/>
@@ -83,6 +89,32 @@
                     <auxiliary auxtype="ParticleFilter" auxvalue="mu-"/> 
                 </auxiliary>
             </auxiliary>
+
+            <!-- color extension element -->	
+            <colorref ref="test_color"/> 
+        </volume>
+        
+        <volume name="test_layer2">
+            <materialref ref="ALU"/>
+            <solidref ref="layer_box"/>
+            <auxiliary auxtype="SensDet" auxvalue="tracker">
+                <auxiliary auxtype="HitCollection" auxvalue="trackerHit"/>
+            </auxiliary>
+
+        </volume>
+
+        <volume name="test_volume2">
+            <materialref ref="Air"/>
+            <solidref ref="test_box"/>
+            <replicavol number="5">
+                <volumeref ref="test_layer2"/>
+                <replicate_along_axis>
+                    <direction z="1"/>
+                    <width value="20" unit="mm"/>
+                    <offset value="0" unit="mm"/>
+                </replicate_along_axis>
+            </replicavol>
+
             <!-- color extension element -->	
             <colorref ref="test_color"/> 
         </volume>

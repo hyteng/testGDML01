@@ -14,6 +14,12 @@
 
 #include "testGDML01TrackerSD.h"
 
+#include "G4PhysicalVolumeStore.hh"
+#include "G4VPhysicalVolume.hh"
+#include "G4TransportationManager.hh"
+#include "G4PVReplica.hh"
+#include "G4PVParameterised.hh"
+
 testGDML01TrackerSD::testGDML01TrackerSD(G4String& name, std::vector<G4String>& hits, std::vector<G4String>& pars, G4double eff, G4bool noise, G4double th) : testGDML01BaseSD(name, hits, pars) {
     //collectionName.insert("hitsList[0]");
     efficiency = eff;
@@ -34,6 +40,34 @@ void testGDML01TrackerSD::Initialize(G4HCofThisEvent* HCE) {
     HCE->AddHitsCollection(HCID, hitsList[0]);
     */
     testGDML01BaseSD::Initialize(HCE);
+
+
+    G4TransportationManager* trans = G4TransportationManager::GetTransportationManager();
+    int nWorlds = trans->GetNoWorlds();
+    G4cout << "loop over worlds: " << G4endl;
+    std::vector<G4VPhysicalVolume*>::iterator wIter = trans->GetWorldsIterator();
+    for(int i=0; i<nWorlds; i++) {
+        G4cout << (*wIter)->GetName() << ", ";
+        wIter++;
+    }
+    G4cout << G4endl;
+
+    G4cout << "loop over PhysicalVolumeStore: " << G4endl;
+    G4PhysicalVolumeStore* pvStore = G4PhysicalVolumeStore::GetInstance();
+    for(int i=0; i<pvStore->size(); i++) {
+        G4VPhysicalVolume* pvIter = (*pvStore)[i];
+        G4cout << pvIter->GetName() << ", ";
+        if(dynamic_cast<G4PVReplica*>(pvIter)) {
+            // loop over replica
+            G4PVReplica* repVol = dynamic_cast<G4PVReplica*>(pvIter);
+        }
+        if(dynamic_cast<G4PVParameterised*>(pvIter)) {
+            // loop over parameterisation
+            G4PVParameterised *paramVol = dynamic_cast<G4PVParameterised*>(pvIter);
+        }
+    }
+    G4cout << G4endl;
+
     G4cout << "SD Initialize: " << G4endl;
     for(int i=0;i<5;i++)
         for(int j=0;j<400;j++)
