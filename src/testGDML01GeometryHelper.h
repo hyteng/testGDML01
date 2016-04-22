@@ -18,6 +18,7 @@ class testGDML01GeometryHelper {
 
         void init();
     private:
+        void loopOver(const G4VPhysicalVolume* pv, G4int layer);
         //std::vector<G4String> worldNameList;
         std::map<G4String, std::map<G4String, G4TouchableHistoryHandle> > detGeomMap;
 };
