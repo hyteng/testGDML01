@@ -10,6 +10,7 @@
 
 #include "G4PhysicalVolumeStore.hh"
 #include "G4TouchableHistoryHandle.hh"
+#include "G4NavigationHistory.hh"
 
 class testGDML01GeometryHelper {
     public:
@@ -18,8 +19,10 @@ class testGDML01GeometryHelper {
 
         void init();
     private:
-        void loopOver(const G4VPhysicalVolume* pv, G4int layer);
-        //std::vector<G4String> worldNameList;
+        void loopOver(G4VPhysicalVolume* pv, G4int layer);
+        void loopSub(G4LogicalVolume* lv, G4int layer);
+
+        G4NavigationHistory* naviHist;
         std::map<G4String, std::map<G4String, G4TouchableHistoryHandle> > detGeomMap;
 };
 #endif

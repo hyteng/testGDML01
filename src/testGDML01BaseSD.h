@@ -24,12 +24,16 @@ class testGDML01BaseSD :public G4VSensitiveDetector {
         virtual ~testGDML01BaseSD();
 
         void setHitsCollectionName(std::vector<G4String> &hits);
-        void Initialize(G4HCofThisEvent* HCE);
-        G4bool ProcessHits(G4Step* aStep, G4TouchableHistory* roHist=NULL)=0;
+        virtual void Initialize(G4HCofThisEvent* HCE);
+        virtual G4bool ProcessHits(G4Step* aStep, G4TouchableHistory* roHist=NULL)=0;
+
+        const G4String& getDetType() {return detType;};
+        virtual const G4int& getDetId()=0;
 
     protected:
         virtual G4HitsCollection* createHitsCollection(G4String& sdName, G4String& collectionName)=0;
 
+        G4String detType;
         std::vector<G4HitsCollection*> hitsList;
         std::vector<G4int> hitsID;
         std::vector<G4String> para;

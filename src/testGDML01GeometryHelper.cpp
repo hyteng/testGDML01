@@ -15,9 +15,12 @@
 #include "testGDML01GeometryHelper.h"
 
 testGDML01GeometryHelper::testGDML01GeometryHelper() {
+    naviHist = new G4NavigationHistory;
 }
 
 testGDML01GeometryHelper::~testGDML01GeometryHelper() {
+    naviHist->Clear();
+    delete naviHist;
 }
 
 void testGDML01GeometryHelper::init() {
@@ -28,6 +31,7 @@ void testGDML01GeometryHelper::init() {
     for(int i=0; i<nWorlds; i++) {
         G4VPhysicalVolume* pv = (*wIter);
         G4cout << pv->GetName() << G4endl;
+        naviHist->Clear();
         loopOver(pv, 0);
         wIter++;
     }
@@ -68,7 +72,7 @@ void testGDML01GeometryHelper::init() {
     return;
 }
 
-void testGDML01GeometryHelper::loopOver(const G4VPhysicalVolume* pv, G4int layer) {
+void testGDML01GeometryHelper::loopOver(G4VPhysicalVolume* pv, G4int layer) {
     G4LogicalVolume* lv = pv->GetLogicalVolume();
     G4String mLVName = "world";
     if(layer != 0)
@@ -76,15 +80,27 @@ void testGDML01GeometryHelper::loopOver(const G4VPhysicalVolume* pv, G4int layer
     pv->GetMotherLogical();
     G4cout << "node PV: " << pv->GetName() << ", LV: " << lv->GetName() << ", mother LV: " << mLVName << G4endl;
     
+    // the detGeometry did not specify the kReplica and kParameterised type, since later they will get change during the tracking
     switch(pv->VolumeType()) {
         case kNormal:
+            naviHist->NewLevel(pv, kNormal, pv->GetCopyNo());
+            loopSub(lv, layer);
             break;
         case kReplica:
+            for(int replicaNo=0; replicaNo<pv->GetMultiplicity(); replicaNo++) {
+                naviHist->NewLevel(pv, kReplica, replicaNo);
+                loopSub(lv, layer);
+            }
             break;
         case kParameterised:
+            naviHist->NewLevel(pv, kParameterised, pv->GetCopyNo());
+            loopSub(lv, layer);
             break;
     }
+    naviHist->BackLevel();
+}
 
+void testGDML01GeometryHelper::loopSub(G4LogicalVolume* lv, G4int layer) {
     G4int daughterSize = lv->GetNoDaughters();
     for(int i=0; i<daughterSize; i++) {
         G4VPhysicalVolume* pvIter = lv->GetDaughter(i);
