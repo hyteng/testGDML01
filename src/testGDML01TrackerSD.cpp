@@ -11,8 +11,10 @@
 #include "G4Navigator.hh"
 #include "G4TouchableHistoryHandle.hh"
 
+#include <sstream>
 
 #include "testGDML01TrackerSD.h"
+#include "testGDML01GeometryHelper.h"
 
 #include "G4PhysicalVolumeStore.hh"
 #include "G4VPhysicalVolume.hh"
@@ -101,5 +103,13 @@ G4bool testGDML01TrackerSD::ProcessHits(G4Step* aStep, G4TouchableHistory* roHis
     G4ThreeVector naviLocalPosition = naviTouchableHandle->GetHistory()->GetTopTransform().TransformPoint(naviGlobalPosition);
     G4cout << "Navi: PV " << naviTouchableHandle->GetVolume()->GetName() << ", GPos " << naviGlobalPosition << ", LPos " << naviLocalPosition << G4endl;
     G4cout << "preStep: " << touchable->GetHistory()->GetTopTransform().TransformPoint(naviGlobalPosition) << G4endl;
+
+    std::stringstream sId;
+    sId << ROPVNumber;
+    G4String detId = "tracker" + sId.str();
+    testGDML01GeometryHelper* detGeomHelper = testGDML01GeometryHelper::getInstance();
+    G4TouchableHistory detHist = detGeomHelper->getTouchable(detId);
+    G4cout << "detGeom: " << detHist.GetHistory()->GetTopTransform().TransformPoint(naviGlobalPosition) << G4endl;
+
     return true;
 }

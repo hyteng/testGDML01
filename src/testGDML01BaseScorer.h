@@ -22,5 +22,7 @@ class testGDML01BaseScorer :public G4MultiFunctionalDetector {
         std::vector<G4String> para;
         testGDML01BaseSDPara* sdPara;
         testGDML01DetGeometry* detGeom;
+
+        G4String detType;
 };
 #endif
